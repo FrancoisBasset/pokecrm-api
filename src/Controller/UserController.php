@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\PokemonRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -15,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class UserController extends AbstractController {
     #[Route('/signup', name: 'signup', methods: ['POST'])]
-    public function signup(Request $request, EntityManagerInterface $em, UserRepository $userRepository): Response {
+    public function signup(Request $request, EntityManagerInterface $em, UserRepository $userRepository, PokemonRepository $pokemonRepository): Response {
         $data = json_decode($request->getContent(), true);
 
         $existingUser = $userRepository->findBy(['username' => $data['username']]);
@@ -32,6 +33,11 @@ final class UserController extends AbstractController {
         $user->setLastname($data['lastname']);
         $user->setRoles(['ROLE_USER']);
         $user->setStorage('FREE');
+        
+        $pokemonCount = $pokemonRepository->count();
+        $pokemonId = random_int(1, $pokemonCount);
+        $pokemon = $pokemonRepository->find($pokemonId);
+        $user->addPokemonOwned($pokemon);
         
         $em->persist($user);
         $em->flush();

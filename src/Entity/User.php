@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -41,6 +43,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $accesstoken = null;
+
+    /**
+     * @var Collection<int, Pokemon>
+     */
+    #[ORM\ManyToMany(targetEntity: Pokemon::class)]
+    private Collection $pokemonOwneds;
+
+    public function __construct()
+    {
+        $this->pokemonOwneds = new ArrayCollection();
+    }
 
     public function getId(): ?int {
         return $this->id;
@@ -151,6 +164,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     public function setAccesstoken(?string $accesstoken): static
     {
         $this->accesstoken = $accesstoken;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pokemon>
+     */
+    public function getPokemonOwneds(): Collection
+    {
+        return $this->pokemonOwneds;
+    }
+
+    public function addPokemonOwned(Pokemon $pokemonOwned): static
+    {
+        if (!$this->pokemonOwneds->contains($pokemonOwned)) {
+            $this->pokemonOwneds->add($pokemonOwned);
+        }
+
+        return $this;
+    }
+
+    public function removePokemonOwned(Pokemon $pokemonOwned): static
+    {
+        $this->pokemonOwneds->removeElement($pokemonOwned);
 
         return $this;
     }
