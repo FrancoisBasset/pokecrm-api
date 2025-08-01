@@ -66,4 +66,9 @@ final class UserController extends AbstractController {
             'token' => $token
         ]);
     }
+
+    #[Route('mypokemon', name: 'mypokemon', methods: ['GET'])]
+    public function mypokemon(#[CurrentUser] ?User $user): Response {
+        return $this->json($user->getPokemonOwneds());
+    }
 }

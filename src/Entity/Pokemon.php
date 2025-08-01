@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\PokemonRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PokemonRepository::class)]
 class Pokemon
@@ -12,27 +13,35 @@ class Pokemon
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['pokemon:list'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['pokemon:list'])]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(['pokemon:list'])]
     private ?int $generation = null;
 
-    #[ORM\Column(type: Types::BLOB)]
+    #[ORM\Column(length: 255)]
+    #[Groups(['pokemon:list'])]
     private $sprite;
 
     #[ORM\Column(type: Types::ARRAY)]
+    #[Groups(['pokemon:list'])]
     private array $types = [];
 
     #[ORM\Column]
+    #[Groups(['pokemon:list'])]
     private ?float $height = null;
 
     #[ORM\Column]
+    #[Groups(['pokemon:list'])]
     private ?float $weight = null;
 
     #[ORM\Column]
+    #[Groups(['pokemon:list'])]
     private ?int $catchrate = null;
 
     public function getId(): ?int
