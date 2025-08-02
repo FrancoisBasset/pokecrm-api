@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\PokemonRepository;
 use App\Repository\UserRepository;
+use App\Service\MiningService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
@@ -70,5 +71,28 @@ final class UserController extends AbstractController {
     #[Route('mypokemon', name: 'mypokemon', methods: ['GET'])]
     public function mypokemon(#[CurrentUser] ?User $user): Response {
         return $this->json($user->getPokemonOwneds());
+    }
+
+    #[Route('checksalt', name: 'checksalt', methods: ['POST'])]
+    public function mine(#[CurrentUser] ?User $user, Request $request, PokemonRepository $pokemonRepository, EntityManagerInterface $em): Response {
+        $data = json_decode($request->getContent(), true);
+
+        $pokemon = $pokemonRepository->find($data['pokedex_id']);
+        if (!$pokemon) {
+            return $this->json([
+                'message' => 'Ce Pokémon n\'existe pas !'
+            ], 404);
+        }
+
+        $correct = MiningService::checkPokemon($pokemon, $data['salt']);
+        if ($correct) {
+            $user->addPokemonOwned($pokemon);
+            $em->persist($user);
+            $em->flush();
+        }
+
+        return $this->json([
+            'message' => $correct ? 'Le hash est correct !' : 'Mauvais hash !'
+        ], $correct ? 201 : 200);
     }
 }
