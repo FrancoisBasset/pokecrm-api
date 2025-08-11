@@ -12,6 +12,6 @@ final class PokemonController extends AbstractController
     #[Route('/pokemon', name: 'pokemon')]
     public function index(PokemonRepository $pokemonRepository): JsonResponse
     {
-        return $this->json($pokemonRepository->findAll(), 200, [], ['groups' => 'pokemon:list']);
+        return $this->json($pokemonRepository->getRandomPokemonToShow(), 200, [], ['groups' => 'pokemon:list']);
     }
 }
