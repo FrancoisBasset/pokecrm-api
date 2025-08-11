@@ -49,11 +49,18 @@ final class UserController extends AbstractController {
     }
 
     #[Route('login', name: 'login', methods: ['POST'])]
-    public function index(#[CurrentUser] ?User $user, EntityManagerInterface $em): Response {
-        if (null === $user) {
-            return $this->json([
-                'message' => 'missing credentials',
-            ], Response::HTTP_UNAUTHORIZED);
+    public function login(Request $request, EntityManagerInterface $em, UserRepository $userRepository): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $user = $userRepository->findOneBy(['username' => $data['username']]);
+
+        if (!$user) {
+            return $this->json(['message' => 'Ce compte n\'existe pas !'], Response::HTTP_NOT_FOUND);
+        }
+
+        if ($user->getPassword() !== $data['password']) {
+            return $this->json(['message' => 'Mot de passe incorrect !'], Response::HTTP_UNAUTHORIZED);
         }
 
         $token = bin2hex(random_bytes(32));

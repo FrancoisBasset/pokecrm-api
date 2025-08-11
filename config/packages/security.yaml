@@ -20,10 +20,6 @@ security:
             pattern: ^/
             stateless: true
 
-            json_login:
-                # api_login is a route we will create below
-                check_path: login
-
             access_token:
                 token_handler: App\Security\AccessTokenHandler
 
