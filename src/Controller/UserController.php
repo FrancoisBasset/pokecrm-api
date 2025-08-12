@@ -102,4 +102,13 @@ final class UserController extends AbstractController {
             'message' => $correct ? 'Le hash est correct !' : 'Mauvais hash !'
         ], $correct ? 201 : 200);
     }
+
+    #[Route('logout', name: 'logout', methods: ['DELETE'])]
+    public function logout(#[CurrentUser] ?User $user, EntityManagerInterface $em): Response {
+        $user->setAccesstoken(null);
+        $em->persist($user);
+        $em->flush();
+
+        return new JsonResponse();
+    }
 }

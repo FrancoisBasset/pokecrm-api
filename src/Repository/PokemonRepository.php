@@ -16,7 +16,7 @@ class PokemonRepository extends ServiceEntityRepository
         parent::__construct($registry, Pokemon::class);
     }
 
-    public function getRandomPokemonToShow() {
+    public function findRandomPokemonToShow() {
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = 'SELECT * FROM pokemon ORDER BY RANDOM() LIMIT 20';
