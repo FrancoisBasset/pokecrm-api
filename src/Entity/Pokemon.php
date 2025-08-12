@@ -20,6 +20,10 @@ class Pokemon
     #[Groups(['pokemon:list'])]
     private ?string $name = null;
 
+    #[ORM\Column(length: 255)]
+    #[Groups(['pokemon:list'])]
+    private ?string $english_name = null;
+
     #[ORM\Column]
     #[Groups(['pokemon:list'])]
     private ?int $generation = null;
@@ -57,6 +61,18 @@ class Pokemon
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getEnglishName(): ?string
+    {
+        return $this->english_name;
+    }
+
+    public function setEnglishName(string $english_name): static
+    {
+        $this->english_name = $english_name;
 
         return $this;
     }

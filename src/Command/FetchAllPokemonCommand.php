@@ -38,6 +38,7 @@ class FetchAllPokemonCommand extends Command {
 
             $newPokemon = new Pokemon();
             $newPokemon->setName($pokemon->name->fr);
+            $newPokemon->setEnglishName($pokemon->name->en);
             $newPokemon->setGeneration($pokemon->generation);
 
             $newPokemon->setSprite($pokemon->sprites->regular);
