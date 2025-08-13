@@ -99,7 +99,8 @@ final class UserController extends AbstractController {
         }
 
         return $this->json([
-            'message' => $correct ? 'Le hash est correct !' : 'Mauvais hash !'
+            'message' => $correct ? 'Le hash est correct !' : 'Mauvais hash !',
+            'pokemon' => $correct ? $pokemon : null
         ], $correct ? 201 : 200);
     }
 
